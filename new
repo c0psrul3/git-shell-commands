@@ -1,0 +1,43 @@
+#!/bin/bash
+
+SHOW_HELP=
+HELP_MESSAGE=
+if [ $# != 1 -a $# != 2 ] ; then
+	SHOW_HELP=true
+	HELP_MESSAGE="expected 1,2 arguments, got $#"
+elif [ "$1" = "help" ] ; then
+	SHOW_HELP=true
+fi
+
+if [ "$SHOW_HELP" ] ; then
+	echo "usage: new name [description]"
+	if [ "$HELP_MESSAGE" ] ; then
+		echo "$HELP_MESSAGE"
+		exit 1
+	fi
+	exit 0
+fi
+
+GIT_ROOT="$(dirname ${BASH_SOURCE[0]})/.."
+REPO_NAME=$1
+REPO_PATH="$GIT_ROOT/$REPO_NAME.git"
+REPO_DESC=$2
+
+# Check if the repository contains invalid characters.
+if [ ! -z $(echo ${REPO_NAME} | grep -e [^A-z0-9\-]) ] ; then
+	echo "Repository name contains invalid characters."
+	exit 1
+fi
+
+# Check if the repository exists already.
+if [ -e "$REPO_PATH" ] ; then
+	echo "Repository $(basename ${REPO_NAME}) already exists."
+	exit 1
+fi
+
+# Create the repository and write the description.
+git init --bare ${REPO_PATH}
+rm -f ${REPO_PATH}/description
+echo ${REPO_DESC} >> ${REPO_PATH}/description
+exit 0
+

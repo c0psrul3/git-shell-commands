@@ -1,0 +1,25 @@
+#!/bin/bash
+
+ORIGINAL_DESCRIPTION="Unnamed repository; edit this file 'description' to name the repository."
+
+if [ "$1" = "help" ] ; then
+	echo "usage: list {,help}"
+	echo "List all available git repositories."
+elif [ "$1" = "" ] ; then
+	GIT_HOME="$(dirname ${BASH_SOURCE[0]})/.."
+	REPOS="$GIT_HOME/*.git"
+	for FN in $REPOS ; do
+		echo $(basename $FN)
+		if [ -e "$FN/description" ] ; then
+			DESCRIPTION=$(cat "$FN/description")
+			if [ "$DESCRIPTION" != "$ORIGINAL_DESCRIPTION" ]; then
+				printf '    %s\n' "$DESCRIPTION"
+			fi
+		fi
+	done
+else
+	echo "Invalid argument(s)".
+	exit 255
+fi
+
+

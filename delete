@@ -1,0 +1,35 @@
+#!/bin/bash
+
+SHOW_HELP=
+HELP_MESSAGE=
+
+if [ $# != 1 ] ; then
+	SHOW_HELP=true
+	HELP_MESSAGE="Invalid number of arguments supplied."
+fi
+
+if [ "$1" = "help" -o "$SHOW_HELP" ] ; then
+	echo "usage: delete repo_name"
+	if [ ! -z "$HELP_MESSAGE" ] ; then
+		echo "$HELP_MESSAGE"
+		exit 1
+	fi
+	exit 0
+fi
+
+GIT_HOME=$(dirname ${BASH_SOURCE[0]})/..
+REPO_NAME=$1
+REPO_PATH=$GIT_HOME/$REPO_NAME.git
+
+if [ ! -e "$REPO_PATH" ] ; then
+	echo "Repository $REPO_NAME does not exist."
+	exit 1
+fi
+
+read -p "Are you sure you want to delete the repository $REPO_NAME? (y/n) "
+if [ "$REPLY" == "y" ] ; then
+	echo "Deleting repository $REPO_NAME ..."
+	rm -rf "$REPO_PATH"
+fi
+
+

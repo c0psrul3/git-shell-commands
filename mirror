@@ -1,0 +1,20 @@
+#!/bin/bash
+
+GIT_HOME=$(dirname ${BASH_SOURCE[0]})/..
+REPO_NAME=$1
+REPO_PATH=$GIT_HOME/$REPO_NAME.git
+
+# Check if the repository name contains no invalid characters.
+if [ ! -z $(echo "$REPO_NAME" | grep -e [^A-z0-9\-]) ] ; then
+	echo "$REPO_NAME is not a valid repository name."
+	exit 1
+fi
+
+# Is the help requested?
+if [ "$1" = "help" ] ; then
+	echo "usage: mirror {<repo_name>,help} [url]"
+	exit 0
+fi
+
+git clone --mirror "$2" "$REPO_PATH"
+

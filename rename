@@ -1,0 +1,26 @@
+#!/bin/bash
+
+OLD_NAME=$1
+NEW_NAME=$2
+GIT_HOME=$(dirname ${BASH_SOURCE[0]})/..
+
+OLD_PATH=$GIT_HOME/$OLD_NAME.git
+NEW_PATH=$GIT_HOME/$NEW_NAME.git
+
+if [ ! -e "$OLD_PATH" ] ; then
+	echo "Repository $OLD_NAME does not exist."
+	exit 1
+fi
+if [ -e "$NEW_PATH" ] ; then
+	echo "Repository $NEW_NAME already exists."
+	exit 2
+fi
+
+# Make sure the new name contains valid characters.
+if [ ! -z $(echo "$NEW_NAME" | grep -e '[^A-z0-9\-_]+') ] ; then
+	echo "$NEW_NAME is not a valid repository name."
+	exit 3
+fi
+
+mv "$OLD_PATH" "$NEW_PATH"
+

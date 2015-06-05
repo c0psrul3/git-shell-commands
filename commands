@@ -1,0 +1,9 @@
+#!/bin/bash
+GIT_SHELL_COMMANDS="$(dirname ${BASH_SOURCE[0]})"
+FILES="$GIT_SHELL_COMMANDS/*"
+for FN in $FILES ; do
+	if [ -x ${FN} ] ; then
+		echo $(basename $FN)
+	fi
+done
+
